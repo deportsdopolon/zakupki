@@ -445,49 +445,21 @@ kbd{
 
 
 
-/* === SAFE STEP 2 === */
+/* === SAFE STEP 3: polish rows === */
+.itemsHead{ grid-template-columns: 1fr 54px 90px 40px !important; }
+.itemRow { grid-template-columns: 1fr 54px 90px 40px !important; padding: 8px 8px !important; }
 
-/* Date more numeric-looking & smaller */
-.field input[type="date"] {
-  font-size: 12px !important;
-  height: 30px !important;
-  letter-spacing: 1px;
+.itemRow input.name{ font-size: 15px !important; }
+.itemRow input.qty { max-width:54px; text-align:center; font-size: 13px !important; }
+.itemRow input.price{ max-width:90px; text-align:right; font-size: 13px !important; }
+
+/* Make delete smaller and centered */
+.itemRow .delBtn{
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 14px !important;
 }
 
-/* Make price visually 4-digit sized */
-.itemRow input.price {
-  max-width: 70px !important;
-  font-size: 13px !important;
-}
-
-/* Make qty even smaller */
-.itemRow input.qty {
-  max-width: 48px !important;
-  font-size: 13px !important;
-}
-
-/* Alternative stacked layout: name full width on top */
-.itemRow {
-  grid-template-columns: 1fr !important;
-  grid-row-gap: 6px;
-}
-
-.itemRow input.name {
-  width: 100%;
-}
-
-.itemRow input.qty,
-.itemRow input.price {
-  width: 100%;
-}
-
-/* Create second row for qty + price */
-.itemRow {
-  display: grid;
-}
-
-.itemRow input.qty,
-.itemRow input.price {
-  display: inline-block;
-}
+/* Date smaller */
+.field input[type="date"]{ padding: 6px 8px !important; font-size: 12px !important; height: 30px !important; }
 

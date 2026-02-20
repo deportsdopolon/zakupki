@@ -4,11 +4,11 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#aa0000" />
-  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="manifest" href="manifest.webmanifest?v=10" />
   <link rel="icon" href="assets/icon-192.png" />
   <link rel="apple-touch-icon" href="assets/icon-192.png" />
   <title>Закупки</title>
-  <link rel="stylesheet" href="styles.css?v=9" />
+  <link rel="stylesheet" href="styles.css?v=10" />
 </head>
 <body>
   <div class="app">
@@ -70,12 +70,7 @@
             <label for="inpDate">Дата</label>
             <input id="inpDate" type="date" />
           </div>
-          <div class="field">
-            <label for="inpSupplier">Поставщик</label>
-            <input id="inpSupplier" type="text" placeholder="Например: Ozon" />
-          </div>
-          <div class="hint">В цене можно писать: <kbd>Цена - 5000</kbd> или просто <kbd>5000</kbd>. Если пусто — 0.</div>
-        </div>
+</div>
 
         <div class="itemsWrap">
           <div class="itemsHead">
@@ -97,7 +92,7 @@
       <div class="footerBar">
         <div class="footerInner">
           <div class="total">ИТОГО: <span id="sumTotal">0 ₽</span></div>
-          <div class="hint">Enter с цены → новая строка</div>
+          
         </div>
       </div>
     </div>
@@ -105,6 +100,6 @@
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=10"></script>
 </body>
 </html>

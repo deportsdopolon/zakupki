@@ -20,7 +20,6 @@ const btnNew = $("#btnNew");
 const btnExportAllTop = $("#btnExportAllTop");
 
 const inpDate = $("#inpDate");
-const inpSupplier = $("#inpSupplier");
 const itemsEl = $("#items");
 const btnAddItem = $("#btnAddItem");
 const btnExportOne = $("#btnExportOne");
@@ -193,11 +192,9 @@ function renderEdit(){
   editMeta.textContent = `${p.imported ? "Импортировано" : "Не импортировано"} • ${money(sum)}`;
 
   inpDate.value = p.date || todayYmd();
-  inpSupplier.value = p.supplier || "";
 
   const readOnly = !!p.imported;
   inpDate.disabled = readOnly;
-  inpSupplier.disabled = readOnly;
   btnAddItem.disabled = readOnly;
   btnMarkImported.disabled = readOnly;
 
@@ -210,7 +207,7 @@ function renderEdit(){
     const name = document.createElement("input");
     name.className = "name";
     name.type = "text";
-    name.placeholder = "Товар (например: RTX 3060)";
+    name.placeholder = "";
     name.value = it.name || "";
     name.disabled = readOnly;
 
@@ -484,8 +481,6 @@ inpDate.addEventListener("input", () => {
   p.date = inpDate.value || todayYmd();
   touchPurchase();
 });
-inpSupplier.addEventListener("input", () => {
-  const p = getPurchase(currentId);
   if(!p || p.imported) return;
   p.supplier = inpSupplier.value;
   touchPurchase();

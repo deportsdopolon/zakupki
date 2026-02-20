@@ -421,3 +421,25 @@ kbd{
 }
 /* Hide old card styles spacing impact */
 .itemCard, .itemTop, .itemBottom{ display:none; }
+
+
+/* === SAFE STEP 1 === */
+
+/* Max width for name, narrow qty & price */
+.itemsHead { grid-template-columns: 1fr 60px 80px 44px !important; }
+.itemRow  { grid-template-columns: 1fr 60px 80px 44px !important; }
+
+.itemRow input.qty   { max-width:60px; text-align:center; }
+.itemRow input.price { max-width:80px; text-align:right; }
+
+/* Compact date field */
+.field input[type="date"] {
+  padding: 6px 8px !important;
+  font-size: 13px !important;
+  height: 34px !important;
+}
+
+.field label {
+  font-size: 11px !important;
+}
+

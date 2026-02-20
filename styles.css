@@ -443,3 +443,51 @@ kbd{
   font-size: 11px !important;
 }
 
+
+
+/* === SAFE STEP 2 === */
+
+/* Date more numeric-looking & smaller */
+.field input[type="date"] {
+  font-size: 12px !important;
+  height: 30px !important;
+  letter-spacing: 1px;
+}
+
+/* Make price visually 4-digit sized */
+.itemRow input.price {
+  max-width: 70px !important;
+  font-size: 13px !important;
+}
+
+/* Make qty even smaller */
+.itemRow input.qty {
+  max-width: 48px !important;
+  font-size: 13px !important;
+}
+
+/* Alternative stacked layout: name full width on top */
+.itemRow {
+  grid-template-columns: 1fr !important;
+  grid-row-gap: 6px;
+}
+
+.itemRow input.name {
+  width: 100%;
+}
+
+.itemRow input.qty,
+.itemRow input.price {
+  width: 100%;
+}
+
+/* Create second row for qty + price */
+.itemRow {
+  display: grid;
+}
+
+.itemRow input.qty,
+.itemRow input.price {
+  display: inline-block;
+}
+

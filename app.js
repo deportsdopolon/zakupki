@@ -87,7 +87,29 @@ function showToast(msg){
 function money(n){
   const v = Number.isFinite(n) ? n : 0;
   // format with spaces
-  const s = Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  const s = Math.round(v).toString().replace(/\B(?=(\d{3}
+
+function isoToRu(iso){
+  const m = String(iso||"").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if(!m) return String(iso||"");
+  return `${m[3]}.${m[2]}.${m[1]}`;
+}
+function ruToIso(ru){
+  const m = String(ru||"").match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+  if(!m) return "";
+  return `${m[3]}-${m[2]}-${m[1]}`;
+}
+function maskRuDate(s){
+  s = String(s||"").replace(/[^\d]/g,"").slice(0,8);
+  const a = s.slice(0,2);
+  const b = s.slice(2,4);
+  const c = s.slice(4,8);
+  let out = a;
+  if(s.length>2) out += "." + b;
+  if(s.length>4) out += "." + c;
+  return out;
+}
+)+(?!\d))/g, " ");
   return s + " ₽";
 }
 
@@ -210,8 +232,8 @@ function renderEdit(){
     const name = document.createElement("input");
     name.className = "name";
     name.type = "text";
-    name.placeholder = "Товар (например: RTX 3060)";
-    name.value = it.name || "";
+        name.placeholder = "";
+name.value = it.name || "";
     name.disabled = readOnly;
 
     const qty = document.createElement("input");

@@ -87,7 +87,9 @@ function showToast(msg){
 function money(n){
   const v = Number.isFinite(n) ? n : 0;
   // format with spaces
-  const s = Math.round(v).toString().replace(/\B(?=(\d{3}
+  const s = Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  return s + " ₽";
+}
 
 function isoToRu(iso){
   const m = String(iso||"").match(/^(\d{4})-(\d{2})-(\d{2})$/);
@@ -109,9 +111,7 @@ function maskRuDate(s){
   if(s.length>4) out += "." + c;
   return out;
 }
-)+(?!\d))/g, " ");
-  return s + " ₽";
-}
+
 
 function parseLastNumber(str){
   if(!str) return 0;
@@ -214,7 +214,7 @@ function renderEdit(){
   const sum = calcPurchaseSum(p);
   editMeta.textContent = `${p.imported ? "Импортировано" : "Не импортировано"} • ${money(sum)}`;
 
-  inpDate.value = p.date || todayYmd();
+  inpDate.value = isoToRu(p.date || todayYmd());
   inpSupplier.value = p.supplier || "";
 
   const readOnly = !!p.imported;
@@ -232,8 +232,8 @@ function renderEdit(){
     const name = document.createElement("input");
     name.className = "name";
     name.type = "text";
-        name.placeholder = "";
-name.value = it.name || "";
+    name.placeholder = "";
+    name.value = it.name || "";
     name.disabled = readOnly;
 
     const qty = document.createElement("input");
@@ -508,6 +508,27 @@ inpDate.addEventListener("input", () => {
 });
 inpSupplier.addEventListener("input", () => {
   const p = getPurchase(currentId);
+
+  // RU_DATE_MASK_BEGIN
+  inpDate.addEventListener("input", (e) => {
+    const masked = maskRuDate(e.target.value);
+    if (e.target.value !== masked) e.target.value = masked;
+  });
+
+  inpDate.addEventListener("change", (e) => {
+    const masked = maskRuDate(e.target.value);
+    e.target.value = masked;
+    const iso = ruToIso(masked);
+    if (iso) {
+      // keep internal state as ISO
+      if (state?.draft) state.draft.date = iso;
+      if (state?.current) state.current.date = iso;
+      if (currentId && state?.byId?.[currentId]) state.byId[currentId].date = iso;
+      saveState();
+      renderEdit();
+    }
+  });
+  // RU_DATE_MASK_END
   if(!p || p.imported) return;
   p.supplier = inpSupplier.value;
   touchPurchase();

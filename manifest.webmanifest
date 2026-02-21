@@ -1,18 +1,53 @@
 {
-  "name": "Закуп",
-  "short_name": "Закуп",
-  "start_url": ".",
+  "name": "Закупки",
+  "short_name": "Закупки",
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0f0f12",
-  "theme_color": "#0f0f12",
+  "background_color": "#0b0b0d",
+  "theme_color": "#aa0000",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "assets/icon-72.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icon-96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icon-152.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "icon-512.png",
+      "src": "assets/icon-256.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icon-384.png",
+      "sizes": "384x384",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }

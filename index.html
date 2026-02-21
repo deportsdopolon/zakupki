@@ -2,87 +2,109 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Закуп</title>
-  <link rel="manifest" href="manifest.webmanifest">
-  <meta name="theme-color" content="#0f0f12" />
-  <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="stylesheet" href="styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#aa0000" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="assets/icon-192.png" />
+  <link rel="apple-touch-icon" href="assets/icon-192.png" />
+  <title>Закупки</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="topbar">
-    <div class="title">Закуп</div>
-    <div class="tabs">
-      <button id="tabBuy" class="tab active">Закупка</button>
-      <button id="tabHist" class="tab">История</button>
+  <div class="app">
+    <div class="topbar">
+      <div class="brand" role="banner">
+        <div class="brandMark" aria-hidden="true"><span>Z</span></div>
+        <div class="brandTitle">
+          <div class="title">Закупки</div>
+          <div class="sub">KompVLZ • офлайн</div>
+        </div>
+      </div>
+      <button id="btnNew" class="iconBtn primary" title="Новая закупка" aria-label="Новая закупка">
+        + 
+      </button>
     </div>
-  </header>
 
-  <main class="wrap">
-    <!-- BUY -->
-    <section id="pageBuy" class="page">
-      <div class="card">
-        <div class="row">
-          <input id="inpSupplier" class="inp" placeholder="Поставщик" />
-        </div>
-        <div class="row">
-          <input id="inpDate" class="inp" placeholder="Дата" />
-        </div>
+    <div id="pageList" class="page active">
+      <div class="chips" role="tablist" aria-label="Фильтр">
+        <div class="chip active" data-filter="todo" role="tab" aria-selected="true">Не импортированные</div>
+        <div class="chip" data-filter="all" role="tab" aria-selected="false">Все</div>
+        <div class="chip" data-filter="arch" role="tab" aria-selected="false">Архив</div>
       </div>
 
       <div class="card">
-        <div class="cardhead">
-          <div class="h">Позиции</div>
-          <button id="btnAdd" class="btn">+</button>
+        <div class="cardHeader">
+          <div>
+            <div class="h1">Список закупок</div>
+            <div class="meta">Тап — открыть. Долгое на ⤓ — backup всех.</div>
+          </div>
+          <button id="btnExportAllTop" class="iconBtn ghost" title="Экспорт (долгое — backup)" aria-label="Экспорт">
+            ⤓
+          </button>
         </div>
-
-        <div id="buyList" class="list"></div>
-
-        <div class="total">
-          <div class="totalLabel">Итого</div>
-          <div id="buyTotal" class="totalValue">0 ₽</div>
-        </div>
-
-        <button id="btnSavePurchase" class="btn primary">Сохранить</button>
+        <div class="hr"></div>
+        <div id="list" class="list" style="padding:12px;"></div>
       </div>
-    </section>
+    </div>
 
-    <!-- HISTORY -->
-    <section id="pageHist" class="page hidden">
-      <div id="histList" class="hist"></div>
-    </section>
-  </main>
+    <div id="pageEdit" class="page">
+      <div class="card">
+        <div class="cardHeader">
+          <div>
+            <div id="editTitle" class="h1">Закупка</div>
+            <div id="editMeta" class="meta"></div>
+          </div>
+          <div style="display:flex; gap:10px; align-items:center;">
+            <button id="btnExportOne" class="iconBtn ghost" title="Экспорт (короткое — эта закупка, долгое — backup)" aria-label="Экспорт">
+              ⤓
+            </button>
+            <button id="btnMarkImported" class="iconBtn primary" title="Пометить как импортировано" aria-label="Импортировано">
+              ✅
+            </button>
+          </div>
+        </div>
+        <div class="hr"></div>
 
-  <!-- MODAL -->
-  <div id="modal" class="modal hidden" aria-hidden="true">
-    <div class="sheet">
-      <div class="sheethead">
-        <div id="mTitle" class="sheettitle">Позиция</div>
-        <button id="mClose" class="iconbtn" aria-label="Close">✕</button>
+        <div class="formGrid">
+          <div class="field">
+            <label for="inpDate">Дата</label>
+            <input id="inpDate" type="date" />
+          </div>
+          <div class="field">
+            <label for="inpSupplier">Поставщик</label>
+            <input id="inpSupplier" type="text" placeholder="Например: Ozon" />
+          </div>
+          <div class="hint">В цене можно писать: <kbd>Цена - 5000</kbd> или просто <kbd>5000</kbd>. Если пусто — 0.</div>
+        </div>
+
+        <div class="itemsWrap">
+          <div class="itemsHead">
+            <div>Товар</div>
+            <div style="text-align:right;">Кол-во</div>
+            <div style="text-align:right;">Цена</div>
+            <div></div>
+          </div>
+          <div class="items" id="items"></div>
+        </div>
+
+        <div style="padding: 0 14px 14px;">
+          <button id="btnAddItem" class="iconBtn ghost" style="width:100%; justify-content:center;">
+            + Добавить позицию
+          </button>
+        </div>
       </div>
 
-      <div class="sheetbody">
-        <div class="row">
-          <input id="mName" class="inp" placeholder="Название" />
+      <div class="footerBar">
+        <div class="footerInner">
+          <div class="total">ИТОГО: <span id="sumTotal">0 ₽</span></div>
+          <div class="hint">Enter с цены → новая строка</div>
         </div>
-        <div class="row2">
-          <input id="mQty" class="inp" inputmode="decimal" placeholder="Кол-во" />
-          <input id="mPrice" class="inp" inputmode="decimal" placeholder="Цена" />
-        </div>
-      </div>
-
-      <div class="sheetfoot">
-        <button id="mDelete" class="btn danger hidden">Удалить</button>
-        <button id="mSave" class="btn primary">Ок</button>
       </div>
     </div>
   </div>
 
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
   <script src="app.js"></script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js');
-    }
-  </script>
 </body>
 </html>

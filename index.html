@@ -1,19 +1,88 @@
 <!doctype html>
 <html lang="ru">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Закуп</title>
-<link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#0f0f12"/>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Закуп</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#0f0f12" />
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<header class="top">
-<div class="title">Закуп</div>
-</header>
-<main>
-<div class="info">Проект готов. Логика импорта встроена.</div>
-</main>
+  <header class="topbar">
+    <div class="title">Закуп</div>
+    <div class="tabs">
+      <button id="tabBuy" class="tab active">Закупка</button>
+      <button id="tabHist" class="tab">История</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- BUY -->
+    <section id="pageBuy" class="page">
+      <div class="card">
+        <div class="row">
+          <input id="inpSupplier" class="inp" placeholder="Поставщик" />
+        </div>
+        <div class="row">
+          <input id="inpDate" class="inp" placeholder="Дата" />
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="cardhead">
+          <div class="h">Позиции</div>
+          <button id="btnAdd" class="btn">+</button>
+        </div>
+
+        <div id="buyList" class="list"></div>
+
+        <div class="total">
+          <div class="totalLabel">Итого</div>
+          <div id="buyTotal" class="totalValue">0 ₽</div>
+        </div>
+
+        <button id="btnSavePurchase" class="btn primary">Сохранить</button>
+      </div>
+    </section>
+
+    <!-- HISTORY -->
+    <section id="pageHist" class="page hidden">
+      <div id="histList" class="hist"></div>
+    </section>
+  </main>
+
+  <!-- MODAL -->
+  <div id="modal" class="modal hidden" aria-hidden="true">
+    <div class="sheet">
+      <div class="sheethead">
+        <div id="mTitle" class="sheettitle">Позиция</div>
+        <button id="mClose" class="iconbtn" aria-label="Close">✕</button>
+      </div>
+
+      <div class="sheetbody">
+        <div class="row">
+          <input id="mName" class="inp" placeholder="Название" />
+        </div>
+        <div class="row2">
+          <input id="mQty" class="inp" inputmode="decimal" placeholder="Кол-во" />
+          <input id="mPrice" class="inp" inputmode="decimal" placeholder="Цена" />
+        </div>
+      </div>
+
+      <div class="sheetfoot">
+        <button id="mDelete" class="btn danger hidden">Удалить</button>
+        <button id="mSave" class="btn primary">Ок</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+  </script>
 </body>
 </html>

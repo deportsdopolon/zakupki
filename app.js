@@ -17,9 +17,6 @@ const pageList = $("#pageList");
 const pageEdit = $("#pageEdit");
 const listEl = $("#list");
 const btnNew = $("#btnNew");
-const btnExportAllTop = $("#btnExportAllTop");
-const btnArchiveAllTop = $("#btnArchiveAllTop");
-const btnBack = $("#btnBack");
 
 const inpDate = $("#inpDate");
 const inpSupplier = $("#inpSupplier");
@@ -28,6 +25,7 @@ const btnAddItem = $("#btnAddItem");
 const btnExportOne = $("#btnExportOne");
 const btnMarkImported = $("#btnMarkImported");
 const btnDeletePurchase = $("#btnDeletePurchase");
+const btnBackToList = $("#btnBackToList");
 const editTitle = $("#editTitle");
 const editMeta = $("#editMeta");
 const sumTotal = $("#sumTotal");
@@ -511,19 +509,15 @@ $$(".chip").forEach(ch => {
 
 // Buttons
 btnNew.addEventListener("click", newPurchase);
-
-if(btnBack) btnBack.addEventListener("click", () => { currentId=null; setPage("list"); renderList(); });
 btnAddItem.addEventListener("click", addItemAndFocus);
 btnMarkImported.addEventListener("click", markImported);
 btnDeletePurchase.addEventListener("click", deleteCurrentPurchase);
+btnBackToList.addEventListener("click", () => { currentId = null; setPage("list"); renderList(); });
 btnExportAll.addEventListener("click", exportAllTodo);
 btnArchiveImportedAll.addEventListener("click", archiveAllImported);
 
 // Export buttons with long press
-if(btnExportOne) attachLongPress(btnExportOne, exportOne, exportAll);
-if(btnExportAllTop) attachLongPress(btnExportAllTop, exportAllTodo, exportAll);
-if(btnArchiveAllTop) btnArchiveAllTop.addEventListener("click", archiveAllImported);
-// Inputs
+attachLongPress(btnExportOne, exportOne, exportAll);// Inputs
 inpDate.addEventListener("input", () => {
   const p = getPurchase(currentId);
   if(!p || p.imported) return;

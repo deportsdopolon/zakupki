@@ -36,9 +36,9 @@
         <div class="cardHeader">
           <div>
             <div class="h1">Список закупок</div>
-            <div class="meta">Тап — открыть. Долгое на ⤓ — backup всех.</div>
+            <div class="meta">Тап — открыть.</div>
           </div>
-</div>
+          </div>
         <div class="hr"></div>
         <div id="list" class="list" style="padding:12px;"></div>
       </div>
@@ -48,11 +48,13 @@
       <div class="card">
         <div class="cardHeader">
           <div>
-            <div id="editTitle" class="h1">Закупка</div>
+            <div style="display:flex; align-items:center; gap:10px;">
+  <button id="btnBackToList" class="iconBtn ghost" title="Назад" aria-label="Назад">←</button>
+  <div id="editTitle" class="h1">Закупка</div>
+</div>
             <div id="editMeta" class="meta"></div>
           </div>
           <div style="display:flex; gap:10px; align-items:center;">
-            <button id="btnBack" class="iconBtn ghost" title="Назад" aria-label="Назад">←</button>
             <button id="btnDeletePurchase" class="iconBtn danger" title="Удалить закупку" aria-label="Удалить">✕</button>
             <button id="btnExportOne" class="iconBtn ghost" title="Экспорт (короткое — эта закупка, долгое — backup)" aria-label="Экспорт">
               ⤓

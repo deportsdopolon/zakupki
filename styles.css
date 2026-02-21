@@ -476,5 +476,4 @@ kbd{
   border-radius: 18px;
 }
 
-
-#btnExportAllTop, #btnArchiveAllTop, #btnNew{ width:52px; height:52px; border-radius:18px; }
+#btnBackToList{width:52px;height:52px;border-radius:18px}

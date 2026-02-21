@@ -423,59 +423,9 @@ kbd{
 .itemCard, .itemTop, .itemBottom{ display:none; }
 
 
-
-/* ===== UI changes requested ===== */
-
-/* Edit page: item row becomes: name full width, below qty + price (+ delete) */
-.itemRow{
-  display:grid !important;
-  grid-template-columns: 1fr 1fr 52px;
-  grid-template-areas:
-    "name name name"
-    "qty  price del";
-  gap: 10px !important;
-  align-items: center;
+.iconBtn.danger{
+  background: rgba(217,74,74,.20);
+  border:1px solid rgba(217,74,74,.35);
+  color: #fff;
 }
-.itemRow .name{ grid-area:name; width:100%; }
-.itemRow .qty{ grid-area:qty; width:100%; text-align:center; }
-.itemRow .price{ grid-area:price; width:100%; text-align:right; }
-.itemRow .delBtn{ grid-area:del; width:52px; height:52px; border-radius:18px; }
-
-/* Remove header 'Товар / Кол-во / Цена' if it is too noisy */
-.itemsHead{ display:none !important; }
-
-/* List: Swipe-to-delete (hidden until swipe) */
-.swipeWrap{
-  position: relative;
-  overflow: hidden;
-  border-radius: 22px;
-}
-.swipeActions{
-  position:absolute;
-  inset:0;
-  display:flex;
-  justify-content:flex-end;
-  align-items:stretch;
-  pointer-events:none; /* enabled only when swiped */
-}
-.swipeDelete{
-  width: 112px;
-  background: rgba(217,74,74,.92);
-  border-left: 1px solid rgba(255,255,255,.10);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight: 1100;
-  color:#fff;
-}
-.swipeFront{
-  position:relative;
-  will-change: transform;
-  transition: transform .14s ease;
-}
-.swipeWrap.swiped .swipeFront{
-  transform: translateX(-112px);
-}
-.swipeWrap.swiped .swipeActions{
-  pointer-events:auto;
-}
+.iconBtn.danger:active{transform: translateY(1px)}

@@ -25,6 +25,7 @@ const itemsEl = $("#items");
 const btnAddItem = $("#btnAddItem");
 const btnExportOne = $("#btnExportOne");
 const btnMarkImported = $("#btnMarkImported");
+const btnDeletePurchase = $("#btnDeletePurchase");
 const editTitle = $("#editTitle");
 const editMeta = $("#editMeta");
 const sumTotal = $("#sumTotal");
@@ -151,27 +152,7 @@ function renderList(){
     row.className = "purchaseRow " + (p.imported ? "done" : "todo") + (currentFilter==="arch" ? " arch" : "");
     row.tabIndex = 0;
 
-    
-
-    // swipe wrapper (delete hidden until swipe)
-    const wrap = document.createElement("div");
-    wrap.className = "swipeWrap";
-
-    const actions = document.createElement("div");
-    actions.className = "swipeActions";
-    const btnDel = document.createElement("button");
-    btnDel.className = "swipeDelete";
-    btnDel.textContent = "Удалить";
-    actions.appendChild(btnDel);
-
-    const front = document.createElement("div");
-    front.className = "swipeFront";
-    front.appendChild(row);
-
-    wrap.appendChild(actions);
-    wrap.appendChild(front);
-
-const top = document.createElement("div");
+    const top = document.createElement("div");
     top.className = "purchaseTop";
     const date = document.createElement("div");
     date.className = "date";
@@ -194,57 +175,12 @@ const top = document.createElement("div");
     row.appendChild(top);
     row.appendChild(bottom);
 
-    front.addEventListener("click", () => { if(wrap.classList.contains("swiped")) { wrap.classList.remove("swiped"); return; } openPurchase(p.id); });
-
-    // pointer swipe (left = reveal delete)
-    let startX = 0;
-    let dx = 0;
-    let tracking = false;
-
-    front.addEventListener("pointerdown", (e) => {
-      tracking = true;
-      startX = e.clientX;
-      dx = 0;
-      front.setPointerCapture?.(e.pointerId);
-    });
-
-    front.addEventListener("pointermove", (e) => {
-      if(!tracking) return;
-      dx = e.clientX - startX;
-      // only allow small preview (no over-drag)
-      if(dx < 0){
-        const v = Math.max(dx, -112);
-        row.style.transform = `translateX(${v}px)`;
-      }
-    });
-
-    front.addEventListener("pointerup", () => {
-      if(!tracking) return;
-      tracking = false;
-      row.style.transform = "";
-      if(dx <= -60) wrap.classList.add("swiped");
-      else wrap.classList.remove("swiped");
-    });
-
-    front.addEventListener("pointercancel", () => {
-      tracking = false;
-      row.style.transform = "";
-      wrap.classList.remove("swiped");
-    });
-
-    btnDel.addEventListener("click", (e) => {
-      e.stopPropagation();
-      if(!confirm("Удалить?")) return;
-      state.purchases = state.purchases.filter(x => x.id !== p.id);
-      saveState();
-      renderList();
-    });
-
+    row.addEventListener("click", () => openPurchase(p.id));
     row.addEventListener("keydown", (e) => {
       if(e.key === "Enter" || e.key === " ") openPurchase(p.id);
     });
 
-    listEl.appendChild(wrap);
+    listEl.appendChild(row);
   }
 }
 
@@ -275,8 +211,8 @@ function renderEdit(){
     const name = document.createElement("input");
     name.className = "name";
     name.type = "text";
-        name.placeholder = "";
-name.value = it.name || "";
+    name.placeholder = "Товар (например: RTX 3060)";
+    name.value = it.name || "";
     name.disabled = readOnly;
 
     const qty = document.createElement("input");
@@ -381,8 +317,14 @@ function addItemAndFocus(){
   setTimeout(() => {
     const names = $$("#items input.name");
     const last = names[names.length - 1];
-    if(last) last.focus();
-  }, 20);
+    if(last){
+      last.scrollIntoView({ block: "center", behavior: "smooth" });
+      last.focus();
+      // ensure iOS keyboard
+      try{ last.click(); }catch{}
+      try{ last.setSelectionRange(9999, 9999); }catch{}
+    }
+  }, 30);
 }
 
 function openPurchase(id){
@@ -497,6 +439,20 @@ function markImported(){
   renderEdit();
 }
 
+function deleteCurrentPurchase(){
+  const p = getPurchase(currentId);
+  if(!p) return;
+  const label = (p.supplier || "").trim();
+  const msg = label ? `Удалить закупку: ${label}?` : "Удалить закупку?";
+  if(!confirm(msg)) return;
+  state.purchases = state.purchases.filter(x => x.id !== currentId);
+  currentId = null;
+  saveState();
+  setPage("list");
+  renderList();
+}
+
+
 function attachLongPress(btn, shortFn, longFn, ms=520){
   let t = null;
   let long = false;
@@ -537,6 +493,7 @@ $$(".chip").forEach(ch => {
 btnNew.addEventListener("click", newPurchase);
 btnAddItem.addEventListener("click", addItemAndFocus);
 btnMarkImported.addEventListener("click", markImported);
+btnDeletePurchase.addEventListener("click", deleteCurrentPurchase);
 
 // Export buttons with long press
 attachLongPress(btnExportOne, exportOne, exportAll);

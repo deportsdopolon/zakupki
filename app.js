@@ -211,7 +211,7 @@ function renderEdit(){
     const name = document.createElement("input");
     name.className = "name";
     name.type = "text";
-    name.placeholder = "Товар (например: RTX 3060)";
+    name.placeholder = "";
     name.value = it.name || "";
     name.disabled = readOnly;
 

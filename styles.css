@@ -449,3 +449,21 @@ kbd{
   border:1px solid rgba(217,74,74,.35);
   color:#fff;
 }
+
+
+/* ===== Item Layout: Name full row, below qty + price ===== */
+.itemRow{
+  display:grid !important;
+  grid-template-columns: 1fr 1fr 52px;
+  grid-template-areas:
+    "name name name"
+    "qty  price del";
+  gap:10px !important;
+  align-items:center;
+}
+.itemRow .name{ grid-area:name; width:100%; }
+.itemRow .qty{ grid-area:qty; width:100%; text-align:center; }
+.itemRow .price{ grid-area:price; width:100%; text-align:right; }
+.itemRow .delBtn{ grid-area:del; width:52px; height:52px; }
+
+.itemsHead{ display:none !important; }

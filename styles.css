@@ -423,35 +423,59 @@ kbd{
 .itemCard, .itemTop, .itemBottom{ display:none; }
 
 
-/* --- Swipe-to-delete (List) --- */
-.purchaseSwipe{
+
+/* ===== UI changes requested ===== */
+
+/* Edit page: item row becomes: name full width, below qty + price (+ delete) */
+.itemRow{
+  display:grid !important;
+  grid-template-columns: 1fr 1fr 52px;
+  grid-template-areas:
+    "name name name"
+    "qty  price del";
+  gap: 10px !important;
+  align-items: center;
+}
+.itemRow .name{ grid-area:name; width:100%; }
+.itemRow .qty{ grid-area:qty; width:100%; text-align:center; }
+.itemRow .price{ grid-area:price; width:100%; text-align:right; }
+.itemRow .delBtn{ grid-area:del; width:52px; height:52px; border-radius:18px; }
+
+/* Remove header 'Товар / Кол-во / Цена' if it is too noisy */
+.itemsHead{ display:none !important; }
+
+/* List: Swipe-to-delete (hidden until swipe) */
+.swipeWrap{
   position: relative;
   overflow: hidden;
-  border-radius: 18px;
-  background: rgba(0,0,0,.18);
-  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 22px;
 }
-
-.purchaseSwipe .purchaseRow{
-  background: transparent;
-  border-radius: 18px;
-  transition: transform .18s ease;
-  will-change: transform;
-}
-
-.purchaseSwipe.swipeOpen .purchaseRow{
-  transition: transform .12s ease;
-}
-
-.swipeDelete{
+.swipeActions{
   position:absolute;
-  top:0; bottom:0; right:0;
-  width: 92px;
-  border: none;
-  background: rgba(217,74,74,.95);
-  color:#fff;
-  font-weight: 900;
-  letter-spacing:.2px;
+  inset:0;
+  display:flex;
+  justify-content:flex-end;
+  align-items:stretch;
+  pointer-events:none; /* enabled only when swiped */
 }
-
-.swipeDelete:active{opacity:.9}
+.swipeDelete{
+  width: 112px;
+  background: rgba(217,74,74,.92);
+  border-left: 1px solid rgba(255,255,255,.10);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight: 1100;
+  color:#fff;
+}
+.swipeFront{
+  position:relative;
+  will-change: transform;
+  transition: transform .14s ease;
+}
+.swipeWrap.swiped .swipeFront{
+  transform: translateX(-112px);
+}
+.swipeWrap.swiped .swipeActions{
+  pointer-events:auto;
+}

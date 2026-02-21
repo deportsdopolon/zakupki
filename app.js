@@ -147,19 +147,31 @@ function renderList(){
   }
 
   for(const p of items){
-    const wrap = document.createElement("div");
-    wrap.className = "purchaseSwipe";
-
-    const del = document.createElement("button");
-    del.className = "swipeDelete";
-    del.type = "button";
-    del.textContent = "Удалить";
-
     const row = document.createElement("div");
     row.className = "purchaseRow " + (p.imported ? "done" : "todo") + (currentFilter==="arch" ? " arch" : "");
     row.tabIndex = 0;
 
-    const top = document.createElement("div");
+    
+
+    // swipe wrapper (delete hidden until swipe)
+    const wrap = document.createElement("div");
+    wrap.className = "swipeWrap";
+
+    const actions = document.createElement("div");
+    actions.className = "swipeActions";
+    const btnDel = document.createElement("button");
+    btnDel.className = "swipeDelete";
+    btnDel.textContent = "Удалить";
+    actions.appendChild(btnDel);
+
+    const front = document.createElement("div");
+    front.className = "swipeFront";
+    front.appendChild(row);
+
+    wrap.appendChild(actions);
+    wrap.appendChild(front);
+
+const top = document.createElement("div");
     top.className = "purchaseTop";
     const date = document.createElement("div");
     date.className = "date";
@@ -182,116 +194,60 @@ function renderList(){
     row.appendChild(top);
     row.appendChild(bottom);
 
-    // normal open
-    row.addEventListener("click", () => {
-      if(row.dataset.swipe === "open") return;
-      openPurchase(p.id);
-    });
-    row.addEventListener("keydown", (e) => {
-      if(e.key === "Enter" || e.key === " ") openPurchase(p.id);
+    front.addEventListener("click", () => { if(wrap.classList.contains("swiped")) { wrap.classList.remove("swiped"); return; } openPurchase(p.id); });
+
+    // pointer swipe (left = reveal delete)
+    let startX = 0;
+    let dx = 0;
+    let tracking = false;
+
+    front.addEventListener("pointerdown", (e) => {
+      tracking = true;
+      startX = e.clientX;
+      dx = 0;
+      front.setPointerCapture?.(e.pointerId);
     });
 
-    // delete action
-    attachSwipeDelete(wrap, row, del, () => {
-      if(!confirm("Удалить закупку?")) return;
+    front.addEventListener("pointermove", (e) => {
+      if(!tracking) return;
+      dx = e.clientX - startX;
+      // only allow small preview (no over-drag)
+      if(dx < 0){
+        const v = Math.max(dx, -112);
+        row.style.transform = `translateX(${v}px)`;
+      }
+    });
+
+    front.addEventListener("pointerup", () => {
+      if(!tracking) return;
+      tracking = false;
+      row.style.transform = "";
+      if(dx <= -60) wrap.classList.add("swiped");
+      else wrap.classList.remove("swiped");
+    });
+
+    front.addEventListener("pointercancel", () => {
+      tracking = false;
+      row.style.transform = "";
+      wrap.classList.remove("swiped");
+    });
+
+    btnDel.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if(!confirm("Удалить?")) return;
       state.purchases = state.purchases.filter(x => x.id !== p.id);
       saveState();
       renderList();
     });
 
-    wrap.appendChild(del);
-    wrap.appendChild(row);
+    row.addEventListener("keydown", (e) => {
+      if(e.key === "Enter" || e.key === " ") openPurchase(p.id);
+    });
+
     listEl.appendChild(wrap);
   }
 }
 
-
-
-// --- Swipe-to-delete for list rows (iPhone style) ---
-function attachSwipeDelete(wrapEl, rowEl, delBtnEl, onDelete){
-  const MAX = 92;           // px reveal
-  const THRESH = 18;        // start drag
-  const OPEN_AT = 44;       // open if beyond
-  let startX = 0;
-  let startY = 0;
-  let dx = 0;
-  let dragging = false;
-
-  function setX(x){
-    rowEl.style.transform = `translateX(${x}px)`;
-  }
-  function close(){
-    wrapEl.classList.remove("swipeOpen");
-    rowEl.dataset.swipe = "";
-    setX(0);
-  }
-  function open(){
-    wrapEl.classList.add("swipeOpen");
-    rowEl.dataset.swipe = "open";
-    setX(-MAX);
-  }
-
-  // click on row: if open -> close; else allow normal click handler
-  rowEl.addEventListener("click", (e) => {
-    if(rowEl.dataset.swipe === "open"){
-      e.stopPropagation();
-      close();
-    }
-  }, true);
-
-  delBtnEl.addEventListener("click", (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onDelete();
-  });
-
-  rowEl.addEventListener("touchstart", (e) => {
-    if(!e.touches || e.touches.length !== 1) return;
-    const t = e.touches[0];
-    startX = t.clientX;
-    startY = t.clientY;
-    dx = 0;
-    dragging = false;
-  }, {passive:true});
-
-  rowEl.addEventListener("touchmove", (e) => {
-    if(!e.touches || e.touches.length !== 1) return;
-    const t = e.touches[0];
-    const curX = t.clientX;
-    const curY = t.clientY;
-    const diffX = curX - startX;
-    const diffY = curY - startY;
-
-    // If mostly vertical scroll, do nothing
-    if(Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > 6) return;
-
-    // Only left swipe (or right to close when open)
-    if(!dragging){
-      if(Math.abs(diffX) < THRESH) return;
-      dragging = true;
-    }
-
-    e.preventDefault();
-
-    // When already open, allow right swipe to close
-    let x = diffX;
-    if(rowEl.dataset.swipe === "open") x = diffX - MAX;
-
-    // clamp
-    if(x < -MAX) x = -MAX;
-    if(x > 0) x = 0;
-
-    dx = x;
-    setX(x);
-  }, {passive:false});
-
-  rowEl.addEventListener("touchend", () => {
-    if(!dragging) return;
-    // decide open/close
-    if(dx <= -OPEN_AT) open();
-    else close();
-  }, {passive:true});
-}
 function renderEdit(){
   const p = getPurchase(currentId);
   if(!p) return;
@@ -319,8 +275,8 @@ function renderEdit(){
     const name = document.createElement("input");
     name.className = "name";
     name.type = "text";
-    name.placeholder = "Товар (например: RTX 3060)";
-    name.value = it.name || "";
+        name.placeholder = "";
+name.value = it.name || "";
     name.disabled = readOnly;
 
     const qty = document.createElement("input");

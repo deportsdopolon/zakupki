@@ -1,102 +1,105 @@
-<!DOCTYPE html>
-
+<!doctype html>
 <html lang="ru">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
-<meta content="#aa0000" name="theme-color"/>
-<link href="manifest.webmanifest" rel="manifest"/>
-<link href="assets/icon-192.png" rel="icon"/>
-<link href="assets/icon-192.png" rel="apple-touch-icon"/>
-<title>Закупки</title>
-<link href="styles.css" rel="stylesheet"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#aa0000" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="assets/icon-192.png" />
+  <link rel="apple-touch-icon" href="assets/icon-192.png" />
+  <title>Закупки</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-<div class="app">
-<div class="topbar">
-<div class="brand" role="banner">
-<div aria-hidden="true" class="brandMark"><span>Z</span></div>
-<div class="brandTitle">
-<div class="title">Закупки</div>
-<div class="sub">KompVLZ • офлайн</div>
-</div>
-</div>
-<button aria-label="Новая закупка" class="iconBtn primary" id="btnNew" title="Новая закупка">
+  <div class="app">
+    <div class="topbar">
+      <div class="brand" role="banner">
+        <div class="brandMark" aria-hidden="true"><span>Z</span></div>
+        <div class="brandTitle">
+          <div class="title">Закупки</div>
+          <div class="sub">KompVLZ • офлайн</div>
+        </div>
+      </div>
+      <button id="btnNew" class="iconBtn primary" title="Новая закупка" aria-label="Новая закупка">
         + 
       </button>
-</div>
-<div class="page active" id="pageList">
-<div aria-label="Фильтр" class="chips" role="tablist">
-<div aria-selected="true" class="chip active" data-filter="todo" role="tab">Не импортированные</div>
-<div aria-selected="false" class="chip" data-filter="all" role="tab">Все</div>
-<div aria-selected="false" class="chip" data-filter="arch" role="tab">Архив</div>
-</div>
-<div class="card">
-<div class="cardHeader">
-<div>
-<div class="h1">Список закупок</div>
-<div class="meta">Тап — открыть. Долгое на ⤓ — backup всех.</div>
-</div>
-<button aria-label="Экспорт" class="iconBtn ghost" id="btnExportAllTop" title="Экспорт (долгое — backup)">
+    </div>
+
+    <div id="pageList" class="page active">
+      <div class="chips" role="tablist" aria-label="Фильтр">
+        <div class="chip active" data-filter="todo" role="tab" aria-selected="true">Не импортированные</div>
+        <div class="chip" data-filter="all" role="tab" aria-selected="false">Все</div>
+        <div class="chip" data-filter="arch" role="tab" aria-selected="false">Архив</div>
+      </div>
+
+      <div class="card">
+        <div class="cardHeader">
+          <div>
+            <div class="h1">Список закупок</div>
+            <div class="meta">Тап — открыть. Долгое на ⤓ — backup всех.</div>
+          </div>
+          <button id="btnExportAllTop" class="iconBtn ghost" title="Экспорт (долгое — backup)" aria-label="Экспорт">
             ⤓
           </button>
-</div>
-<div class="hr"></div>
-<div class="list" id="list" style="padding:12px;"></div>
-</div>
-</div>
-<div class="page" id="pageEdit">
-<div class="card">
-<div class="cardHeader">
-<div>
-<div class="h1" id="editTitle">Закупка</div>
-<div class="meta" id="editMeta"></div>
-</div>
-<div style="display:flex; gap:10px; align-items:center;">
-<button aria-label="Экспорт" class="iconBtn ghost" id="btnExportOne" title="Экспорт (короткое — эта закупка, долгое — backup)">
+        </div>
+        <div class="hr"></div>
+        <div id="list" class="list" style="padding:12px;"></div>
+      </div>
+    </div>
+
+    <div id="pageEdit" class="page">
+      <div class="card">
+        <div class="cardHeader">
+          <div>
+            <div id="editTitle" class="h1">Закупка</div>
+            <div id="editMeta" class="meta"></div>
+          </div>
+          <div style="display:flex; gap:10px; align-items:center;">
+            <button id="btnExportOne" class="iconBtn ghost" title="Экспорт (короткое — эта закупка, долгое — backup)" aria-label="Экспорт">
               ⤓
             </button>
-<button aria-label="Импортировано" class="iconBtn primary" id="btnMarkImported" title="Пометить как импортировано">
+            <button id="btnMarkImported" class="iconBtn primary" title="Пометить как импортировано" aria-label="Импортировано">
               ✅
             </button>
-</div>
-</div>
-<div class="hr"></div>
-<div class="formGrid">
-<div class="field">
-<label for="inpDate">Дата</label>
-<input id="inpDate" inputmode="numeric" maxlength="10" placeholder="Дата" type="text"/>
-</div>
-<div class="field">
-<label for="inpSupplier">Поставщик</label>
-<input id="inpSupplier" type="text"/>
-</div>
+          </div>
+        </div>
+        <div class="hr"></div>
 
-</div>
-<div class="itemsWrap">
-<div class="itemsHead">
-<div>Товар</div>
-<div style="text-align:right;">Кол-во</div>
-<div style="text-align:right;">Цена</div>
-<div></div>
-</div>
-<div class="items" id="items"></div>
-</div>
-<div style="padding: 0 14px 14px;">
-<button class="iconBtn ghost" id="btnAddItem" style="width:100%; justify-content:center;">
+        <div class="formGrid">
+          <input id="inpDate" type="hidden" />
+          <div class="field">
+            <label for="inpSupplier">Поставщик</label>
+            <input id="inpSupplier" type="text" />
+          </div>
+          </div>
+
+        <div class="itemsWrap">
+          <div class="itemsHead">
+            <div>Товар</div>
+            <div style="text-align:right;">Кол-во</div>
+            <div style="text-align:right;">Цена</div>
+            <div></div>
+          </div>
+          <div class="items" id="items"></div>
+        </div>
+
+        <div style="padding: 0 14px 14px;">
+          <button id="btnAddItem" class="iconBtn ghost" style="width:100%; justify-content:center;">
             + Добавить позицию
           </button>
-</div>
-</div>
-<div class="footerBar">
-<div class="footerInner">
-<div class="total">ИТОГО: <span id="sumTotal">0 ₽</span></div>
+        </div>
+      </div>
 
-</div>
-</div>
-</div>
-</div>
-<div aria-live="polite" class="toast" id="toast" role="status"></div>
-<script src="app.js"></script>
+      <div class="footerBar">
+        <div class="footerInner">
+          <div class="total">ИТОГО: <span id="sumTotal">0 ₽</span></div>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
 </body>
 </html>

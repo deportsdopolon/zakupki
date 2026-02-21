@@ -480,3 +480,47 @@ kbd{
   color: #fff;
   pointer-events: none;
 }
+
+
+/* v13 debug modal */
+.dbgModal{
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(0,0,0,.55);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding: 18px;
+}
+.dbgModal.hidden{ display:none; }
+.dbgModalCard{
+  width: min(680px, 100%);
+  max-height: 80vh;
+  overflow:auto;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(18,18,23,.94);
+  padding: 14px;
+}
+.dbgModalTitle{
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.dbgText{
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 12px;
+  line-height: 1.35;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.08);
+  padding: 10px;
+  background: rgba(255,255,255,.03);
+  min-height: 120px;
+}
+.dbgModalBtns{
+  display:flex;
+  gap: 10px;
+  justify-content:flex-end;
+  margin-top: 12px;
+}

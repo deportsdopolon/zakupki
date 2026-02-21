@@ -4,11 +4,11 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#aa0000" />
-  <link rel="manifest" href="manifest.webmanifest?v=12" />
+  <link rel="manifest" href="manifest.webmanifest?v=13" />
   <link rel="icon" href="assets/icon-192.png" />
   <link rel="apple-touch-icon" href="assets/icon-192.png" />
   <title>Закупки</title>
-  <link rel="stylesheet" href="styles.css?v=12" />
+  <link rel="stylesheet" href="styles.css?v=13" />
 </head>
 <body>
   <div class="app">
@@ -24,6 +24,7 @@
       <button id="btnNew" class="iconBtn primary" title="Новая закупка" aria-label="Новая закупка" onclick="window.__dbgClick && window.__dbgClick('new')" >
         + 
       </button>
+      <button id="dbgBtn" class="iconBtn ghost" title="Ошибка">🐞</button>
     </div>
 
     <div id="pageList" class="page active">
@@ -101,6 +102,18 @@
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <script src="app.js?v=12"></script>
+  <script src="app.js?v=13"></script>
+
+    <div id="dbgModal" class="dbgModal hidden">
+      <div class="dbgModalCard">
+        <div class="dbgModalTitle">Ошибка JS</div>
+        <pre id="dbgText" class="dbgText">(пусто)</pre>
+        <div class="dbgModalBtns">
+          <button id="dbgCopy" class="btn">Копировать</button>
+          <button id="dbgClose" class="btn ghost">Закрыть</button>
+        </div>
+      </div>
+    </div>
+
 </body>
 </html>

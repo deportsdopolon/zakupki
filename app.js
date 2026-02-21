@@ -25,6 +25,7 @@ const itemsEl = $("#items");
 const btnAddItem = $("#btnAddItem");
 const btnExportOne = $("#btnExportOne");
 const btnMarkImported = $("#btnMarkImported");
+const btnArchiveToggle = $("#btnArchiveToggle");
 const btnDeletePurchase = $("#btnDeletePurchase");
 const btnBackToList = $("#btnBackToList");
 const editTitle = $("#editTitle");
@@ -182,8 +183,8 @@ function renderList(){
     const supplier = document.createElement("div");
     supplier.textContent = (p.supplier && p.supplier.trim()) ? p.supplier.trim() : " ";
     const badge = document.createElement("div");
-    badge.className = "badge " + (p.imported ? "done" : "todo");
-    badge.textContent = p.imported ? "Импортировано" : "Не импортировано";
+    badge.className = "badge " + (p.archived ? "arch" : (p.imported ? "done" : "todo"));
+    badge.textContent = p.archived ? "Архив" : (p.imported ? "Импортировано" : "Не импортировано");
     bottom.appendChild(supplier);
     bottom.appendChild(badge);
 
@@ -206,16 +207,23 @@ function renderEdit(){
 
   editTitle.textContent = "Закупка";
   const sum = calcPurchaseSum(p);
-  editMeta.textContent = `${p.imported ? "Импортировано" : "Не импортировано"} • ${money(sum)}`;
+  editMeta.textContent = `${p.archived ? "Архив" : (p.imported ? "Импортировано" : "Не импортировано")} • ${money(sum)}`;
 
   inpDate.value = p.date || todayYmd();
   inpSupplier.value = p.supplier || "";
 
-  const readOnly = !!p.imported;
+  const readOnly = !!p.imported || !!p.archived;
   inpDate.disabled = readOnly;
   inpSupplier.disabled = readOnly;
   btnAddItem.disabled = readOnly;
   btnMarkImported.disabled = readOnly;
+  if(btnArchiveToggle){
+    btnArchiveToggle.style.display = "flex";
+    btnArchiveToggle.disabled = false;
+    // show archive icon state
+    btnArchiveToggle.textContent = p.archived ? "↩️" : "📦";
+    btnArchiveToggle.title = p.archived ? "Вернуть из архива" : "В архив";
+  }
 
   itemsEl.innerHTML = "";
 
@@ -311,7 +319,7 @@ function updateTotals(){
   if(!p) return;
   const sum = calcPurchaseSum(p);
   sumTotal.textContent = money(sum);
-  editMeta.textContent = `${p.imported ? "Импортировано" : "Не импортировано"} • ${money(sum)}`;
+  editMeta.textContent = `${p.archived ? "Архив" : (p.imported ? "Импортировано" : "Не импортировано")} • ${money(sum)}`;
 }
 
 function touchPurchase(){
@@ -456,6 +464,19 @@ function markImported(){
   renderEdit();
 }
 
+
+function toggleArchive(){
+  const p = getPurchase(currentId);
+  if(!p) return;
+  p.archived = !p.archived;
+  touchPurchase();
+  showToast(p.archived ? "В архив" : "Возвращено");
+  // after archiving/unarchiving go back to list for clarity
+  currentId = null;
+  setPage("list");
+  renderList();
+}
+
 function deleteCurrentPurchase(){
   const p = getPurchase(currentId);
   if(!p) return;
@@ -510,6 +531,7 @@ $$(".chip").forEach(ch => {
 btnNew.addEventListener("click", newPurchase);
 btnAddItem.addEventListener("click", addItemAndFocus);
 btnMarkImported.addEventListener("click", markImported);
+if(btnArchiveToggle) btnArchiveToggle.addEventListener("click", toggleArchive);
 btnDeletePurchase.addEventListener("click", deleteCurrentPurchase);
 btnBackToList.addEventListener("click", () => { currentId = null; setPage("list"); renderList(); });
 // Export buttons with long press

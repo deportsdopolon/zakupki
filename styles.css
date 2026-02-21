@@ -467,3 +467,11 @@ kbd{
 .itemRow .delBtn{ grid-area:del; width:52px; height:52px; }
 
 .itemsHead{ display:none !important; }
+
+
+/* Topbar extra buttons */
+#btnExportAll, #btnArchiveImportedAll{
+  width: 52px;
+  height: 52px;
+  border-radius: 18px;
+}

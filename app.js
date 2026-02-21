@@ -33,6 +33,7 @@ const sumTotal = $("#sumTotal");
 const toast = $("#toast");
 
 let state = loadState();
+migrateState();
 let currentId = null;
 let currentFilter = "todo";
 
@@ -74,6 +75,15 @@ function loadState(){
     return { purchases: [] };
   }
 }
+
+function migrateState(){
+  if(!state || !Array.isArray(state.purchases)) return;
+  for(const p of state.purchases){
+    if(typeof p.archived !== "boolean") p.archived = false;
+  }
+  saveState();
+}
+
 function saveState(){
   localStorage.setItem(LS_KEY, JSON.stringify(state));
 }
@@ -134,10 +144,14 @@ function renderList(){
   // sort: latest first by date then createdAt
   items.sort((a,b) => (b.date||"").localeCompare(a.date||"") || (b.createdAt||"").localeCompare(a.createdAt||""));
   if(currentFilter === "todo"){
-    items = items.filter(p => !p.imported);
+    items = items.filter(p => !p.imported && !p.archived);
+  }else if(currentFilter === "imp"){
+    items = items.filter(p => !!p.imported && !p.archived);
   }else if(currentFilter === "arch"){
-    items = items.filter(p => !!p.imported);
+    items = items.filter(p => !!p.archived);
   }
+  if(currentFilter !== "todo" && currentFilter !== "imp" && currentFilter !== "arch") currentFilter = "todo";
+
   if(items.length === 0){
     const empty = document.createElement("div");
     empty.style.padding = "18px 6px";
@@ -149,7 +163,7 @@ function renderList(){
 
   for(const p of items){
     const row = document.createElement("div");
-    row.className = "purchaseRow " + (p.imported ? "done" : "todo") + (currentFilter==="arch" ? " arch" : "");
+    row.className = "purchaseRow " + (p.archived ? "archived" : (p.imported ? "done" : "todo")) + (currentFilter==="arch" ? " arch" : "");
     row.tabIndex = 0;
 
     const top = document.createElement("div");
@@ -340,6 +354,7 @@ function newPurchase(){
     supplier: "",
     imported: false,
     importedAt: null,
+    archived: false,
     createdAt: localIsoWithOffset(new Date()),
     updatedAt: localIsoWithOffset(new Date()),
     items: [{ name:"", qty:1, price:0 }]
@@ -361,6 +376,10 @@ function backToList(){
 }
 
 // Export helpers
+function downloadJson(filename, obj){
+  downloadText(filename, JSON.stringify(obj, null, 2));
+}
+
 function downloadText(filename, text, mime="application/json"){
   const blob = new Blob([text], {type:mime});
   const url = URL.createObjectURL(blob);
@@ -493,6 +512,8 @@ btnNew.addEventListener("click", newPurchase);
 btnAddItem.addEventListener("click", addItemAndFocus);
 btnMarkImported.addEventListener("click", markImported);
 btnDeletePurchase.addEventListener("click", deleteCurrentPurchase);
+btnExportAll.addEventListener("click", exportAllTodo);
+btnArchiveImportedAll.addEventListener("click", archiveAllImported);
 
 // Export buttons with long press
 attachLongPress(btnExportOne, exportOne, exportAll);

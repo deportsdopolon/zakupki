@@ -512,9 +512,10 @@ btnAddItem.addEventListener("click", addItemAndFocus);
 btnMarkImported.addEventListener("click", markImported);
 btnDeletePurchase.addEventListener("click", deleteCurrentPurchase);
 btnBackToList.addEventListener("click", () => { currentId = null; setPage("list"); renderList(); });
-if(btnExportAll) btnExportAll.addEventListener("click", exportAllTodo);
 // Export buttons with long press
 attachLongPress(btnExportOne, exportOne, exportAll);// Inputs
+if(btnExportAll) attachLongPress(btnExportAll, exportAllForImport, exportAll);
+
 inpDate.addEventListener("input", () => {
   const p = getPurchase(currentId);
   if(!p || p.imported) return;
@@ -582,4 +583,60 @@ function exportAllTodo(){
   saveState();
   renderList();
   showToast("Экспортировано");
+}
+
+// Export ALL purchases (not archived) for KompVLZsklad import
+function exportAllForImport(){
+  const all = state.purchases.filter(p => !p.archived);
+  if(all.length === 0){ alert("Нет закупок."); return; }
+
+  const exportedAt = localIsoWithOffset(new Date());
+
+  const purchases = all.map(p => ({
+    id: p.id,
+    date: p.date,
+    supplier: (p.supplier||"").trim(),
+    imported: !!p.imported,
+    importedAt: p.importedAt,
+    items: (p.items||[])
+      .filter(i => (i.name||"").trim())
+      .map(i => ({
+        name: String(i.name||"").trim(),
+        qty: Math.max(1, Number(i.qty)||1),
+        price: Math.max(0, Number(i.price)||0),
+        currency: CURRENCY
+      }))
+  }));
+
+  // convenience: flattened lines for very simple importers
+  const lines = [];
+  for(const p of purchases){
+    for(const it of (p.items||[])){
+      lines.push({
+        purchaseId: p.id,
+        date: p.date,
+        supplier: p.supplier,
+        name: it.name,
+        qty: it.qty,
+        price: it.price,
+        currency: it.currency
+      });
+    }
+  }
+
+  const payload = {
+    app: APP_ID,
+    format: "kompvlzsklad_import",
+    formatVersion: FORMAT_VERSION,
+    exportedAt,
+    countPurchases: purchases.length,
+    countLines: lines.length,
+    purchases,
+    lines
+  };
+
+  const ymd = todayYmd();
+  const filename = `zakup_import_all_${ymd}.json`;
+  downloadJson(filename, payload);
+  showToast("Экспортировано для склада");
 }

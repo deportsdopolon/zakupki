@@ -423,9 +423,29 @@ kbd{
 .itemCard, .itemTop, .itemBottom{ display:none; }
 
 
+/* ===== Requested layout fixes ===== */
+
+/* Hide table header row if present */
+.itemsHead{ display:none !important; }
+
+/* Item row: name full width, below qty + price (+ delete) */
+.itemRow{
+  display:grid !important;
+  grid-template-columns: 1fr 1fr 52px;
+  grid-template-areas:
+    "name name name"
+    "qty  price del";
+  gap: 10px !important;
+  align-items:center;
+}
+.itemRow .name{ grid-area:name; width:100%; min-width:0; }
+.itemRow .qty{ grid-area:qty; width:100%; text-align:center; }
+.itemRow .price{ grid-area:price; width:100%; text-align:right; }
+.itemRow .delBtn{ grid-area:del; width:52px; height:52px; border-radius:18px; }
+
+/* Top delete button */
 .iconBtn.danger{
   background: rgba(217,74,74,.20);
   border:1px solid rgba(217,74,74,.35);
-  color: #fff;
+  color:#fff;
 }
-.iconBtn.danger:active{transform: translateY(1px)}

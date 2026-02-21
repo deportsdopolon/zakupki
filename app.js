@@ -320,7 +320,6 @@ function addItemAndFocus(){
     if(last){
       last.scrollIntoView({ block: "center", behavior: "smooth" });
       last.focus();
-      // ensure iOS keyboard
       try{ last.click(); }catch{}
       try{ last.setSelectionRange(9999, 9999); }catch{}
     }

@@ -55,9 +55,8 @@
             <div id="editMeta" class="meta"></div>
           </div>
           <div style="display:flex; gap:10px; align-items:center;">
-            
             <button id="btnDeletePurchase" class="iconBtn danger" title="Удалить закупку" aria-label="Удалить">✕</button>
-<button id="btnExportOne" class="iconBtn ghost" title="Экспорт (короткое — эта закупка, долгое — backup)" aria-label="Экспорт">
+            <button id="btnExportOne" class="iconBtn ghost" title="Экспорт (короткое — эта закупка, долгое — backup)" aria-label="Экспорт">
               ⤓
             </button>
             <button id="btnMarkImported" class="iconBtn primary" title="Пометить как импортировано" aria-label="Импортировано">
@@ -68,16 +67,12 @@
         <div class="hr"></div>
 
         <div class="formGrid">
-          <div class="field">
-            <label for="inpDate">Дата</label>
-            <input id="inpDate" type="date" />
-          </div>
+          <input id="inpDate" type="hidden" />
           <div class="field">
             <label for="inpSupplier">Поставщик</label>
-            <input id="inpSupplier" type="text" placeholder="Например: Ozon" />
+            <input id="inpSupplier" type="text" />
           </div>
-          <div class="hint">В цене можно писать: <kbd>Цена - 5000</kbd> или просто <kbd>5000</kbd>. Если пусто — 0.</div>
-        </div>
+          </div>
 
         <div class="itemsWrap">
           <div class="itemsHead">
@@ -99,8 +94,7 @@
       <div class="footerBar">
         <div class="footerInner">
           <div class="total">ИТОГО: <span id="sumTotal">0 ₽</span></div>
-          <div class="hint">Enter с цены → новая строка</div>
-        </div>
+          </div>
       </div>
     </div>
   </div>

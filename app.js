@@ -518,8 +518,6 @@ btnArchiveImportedAll.addEventListener("click", archiveAllImported);
 
 // Export buttons with long press
 attachLongPress(btnExportOne, exportOne, exportAll);
-attachLongPress(btnExportAllTop, exportAll, exportAll);
-
 // Inputs
 inpDate.addEventListener("input", () => {
   const p = getPurchase(currentId);

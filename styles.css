@@ -477,9 +477,4 @@ kbd{
 }
 
 
-.topActions{
-  display:flex;
-  gap:12px;
-  align-items:center;
-}
-.topActions .iconBtn{ width:52px; height:52px; border-radius:18px; }
+#btnExportAllTop, #btnArchiveAllTop, #btnNew{ width:52px; height:52px; border-radius:18px; }

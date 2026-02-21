@@ -20,13 +20,9 @@
           <div class="sub">KompVLZ • офлайн</div>
         </div>
       </div>
-      
-      <div class="topActions">
-        <button id="btnExportAll" class="iconBtn ghost" title="Экспорт всех (не импортированные)" aria-label="Экспорт всех">⤓</button>
-        <button id="btnArchiveImportedAll" class="iconBtn ghost" title="В архив (все импортированные)" aria-label="В архив">📦</button>
-        <button id="btnNew" class="iconBtn primary" title="Новая закупка" aria-label="Новая закупка">+</button>
-      </div>
-
+      <button id="btnNew" class="iconBtn primary" title="Новая закупка" aria-label="Новая закупка">
+        + 
+      </button>
     </div>
 
     <div id="pageList" class="page active">
@@ -56,6 +52,7 @@
             <div id="editMeta" class="meta"></div>
           </div>
           <div style="display:flex; gap:10px; align-items:center;">
+            <button id="btnBack" class="iconBtn ghost" title="Назад" aria-label="Назад">←</button>
             <button id="btnDeletePurchase" class="iconBtn danger" title="Удалить закупку" aria-label="Удалить">✕</button>
             <button id="btnExportOne" class="iconBtn ghost" title="Экспорт (короткое — эта закупка, долгое — backup)" aria-label="Экспорт">
               ⤓

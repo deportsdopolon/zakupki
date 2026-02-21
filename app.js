@@ -1,3 +1,4 @@
+window.__appReady = false;
 /* KompVLZ Закупки — PWA (offline, localStorage)
    Rules:
    - Items are cards: name, qty (>=1), price (last number in input); empty => 0
@@ -503,3 +504,5 @@ if("serviceWorker" in navigator){
 }
 
 renderList();
+
+window.__appReady = true;

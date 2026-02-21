@@ -4,15 +4,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#aa0000" />
-  <link rel="manifest" href="manifest.webmanifest?v=11" />
+  <link rel="manifest" href="manifest.webmanifest?v=12" />
   <link rel="icon" href="assets/icon-192.png" />
   <link rel="apple-touch-icon" href="assets/icon-192.png" />
   <title>Закупки</title>
-  <link rel="stylesheet" href="styles.css?v=11" />
+  <link rel="stylesheet" href="styles.css?v=12" />
 </head>
 <body>
   <div class="app">
     <div class="topbar">
+      <div id="dbgBanner" class="dbgBanner">JS: ...</div>
       <div class="brand" role="banner">
         <div class="brandMark" aria-hidden="true"><span>Z</span></div>
         <div class="brandTitle">
@@ -20,7 +21,7 @@
           <div class="sub">KompVLZ • офлайн</div>
         </div>
       </div>
-      <button id="btnNew" class="iconBtn primary" title="Новая закупка" aria-label="Новая закупка">
+      <button id="btnNew" class="iconBtn primary" title="Новая закупка" aria-label="Новая закупка" onclick="window.__dbgClick && window.__dbgClick('new')" >
         + 
       </button>
     </div>
@@ -38,7 +39,7 @@
             <div class="h1">Список закупок</div>
             <div class="meta">Тап — открыть. Долгое на ⤓ — backup всех.</div>
           </div>
-          <button id="btnExportAllTop" class="iconBtn ghost" title="Экспорт (долгое — backup)" aria-label="Экспорт">
+          <button id="btnExportAllTop" class="iconBtn ghost" title="Экспорт (долгое — backup)" aria-label="Экспорт" onclick="window.__dbgClick && window.__dbgClick('exportAll')" >
             ⤓
           </button>
         </div>
@@ -55,10 +56,10 @@
             <div id="editMeta" class="meta"></div>
           </div>
           <div style="display:flex; gap:10px; align-items:center;">
-            <button id="btnExportOne" class="iconBtn ghost" title="Экспорт (короткое — эта закупка, долгое — backup)" aria-label="Экспорт">
+            <button id="btnExportOne" class="iconBtn ghost" title="Экспорт (короткое — эта закупка, долгое — backup)" aria-label="Экспорт" onclick="window.__dbgClick && window.__dbgClick('exportOne')" >
               ⤓
             </button>
-            <button id="btnMarkImported" class="iconBtn primary" title="Пометить как импортировано" aria-label="Импортировано">
+            <button id="btnMarkImported" class="iconBtn primary" title="Пометить как импортировано" aria-label="Импортировано" onclick="window.__dbgClick && window.__dbgClick('mark')" >
               ✅
             </button>
           </div>
@@ -83,7 +84,7 @@
         </div>
 
         <div style="padding: 0 14px 14px;">
-          <button id="btnAddItem" class="iconBtn ghost" style="width:100%; justify-content:center;">
+          <button id="btnAddItem" class="iconBtn ghost" style="width:100%; justify-content:center;" onclick="window.__dbgClick && window.__dbgClick('addItem')" >
             + Добавить позицию
           </button>
         </div>
@@ -100,6 +101,6 @@
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <script src="app.js?v=11"></script>
+  <script src="app.js?v=12"></script>
 </body>
 </html>

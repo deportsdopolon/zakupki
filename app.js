@@ -17,6 +17,7 @@ const pageList = $("#pageList");
 const pageEdit = $("#pageEdit");
 const listEl = $("#list");
 const btnNew = $("#btnNew");
+const btnExportAll = $("#btnExportAll");
 
 const inpDate = $("#inpDate");
 const inpSupplier = $("#inpSupplier");
@@ -447,12 +448,10 @@ function exportAll(){
 function markImported(){
   const p = getPurchase(currentId);
   if(!p || p.imported) return;
-  const ok = confirm("Пометить как импортировано и отправить в архив?");
-  if(!ok) return;
   p.imported = true;
   p.importedAt = localIsoWithOffset(new Date());
   touchPurchase();
-  showToast("Перемещено в архив");
+  showToast("Импортировано");
   // lock view
   renderEdit();
 }
@@ -513,9 +512,7 @@ btnAddItem.addEventListener("click", addItemAndFocus);
 btnMarkImported.addEventListener("click", markImported);
 btnDeletePurchase.addEventListener("click", deleteCurrentPurchase);
 btnBackToList.addEventListener("click", () => { currentId = null; setPage("list"); renderList(); });
-btnExportAll.addEventListener("click", exportAllTodo);
-btnArchiveImportedAll.addEventListener("click", archiveAllImported);
-
+if(btnExportAll) btnExportAll.addEventListener("click", exportAllTodo);
 // Export buttons with long press
 attachLongPress(btnExportOne, exportOne, exportAll);// Inputs
 inpDate.addEventListener("input", () => {
@@ -549,3 +546,40 @@ if("serviceWorker" in navigator){
 }
 
 renderList();
+
+
+function exportAllTodo(){
+  const todo = state.purchases.filter(p => !p.imported && !p.archived);
+  if(todo.length === 0){ alert("Нет не импортированных."); return; }
+
+  const payload = {
+    app: APP_ID,
+    version: FORMAT_VERSION,
+    createdAt: localIsoWithOffset(new Date()),
+    count: todo.length,
+    purchases: todo.map(p => ({
+      id: p.id,
+      date: p.date,
+      supplier: p.supplier || "",
+      items: (p.items||[]).filter(i => (i.name||"").trim()).map(i => ({
+        name: String(i.name||"").trim(),
+        qty: Number(i.qty||0),
+        price: Number(i.price||0)
+      }))
+    }))
+  };
+
+  const ymd = todayYmd();
+  const filename = `zakup_all_${ymd}.json`;
+  downloadJson(filename, payload);
+
+  const t = localIsoWithOffset(new Date());
+  for(const p of todo){
+    p.imported = true;
+    p.importedAt = t;
+    p.updatedAt = t;
+  }
+  saveState();
+  renderList();
+  showToast("Экспортировано");
+}

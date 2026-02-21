@@ -475,3 +475,11 @@ kbd{
   height: 52px;
   border-radius: 18px;
 }
+
+
+.topActions{
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+.topActions .iconBtn{ width:52px; height:52px; border-radius:18px; }

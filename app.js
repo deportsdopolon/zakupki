@@ -17,7 +17,8 @@ const pageList = $("#pageList");
 const pageEdit = $("#pageEdit");
 const listEl = $("#list");
 const btnNew = $("#btnNew");
-const btnExportAllTop = $("#btnExportAllTop");
+const btnExportAll = $("#btnExportAll");
+const btnArchiveImportedAll = $("#btnArchiveImportedAll");
 
 const inpDate = $("#inpDate");
 const inpSupplier = $("#inpSupplier");

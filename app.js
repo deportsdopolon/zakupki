@@ -482,7 +482,6 @@ inpDate.addEventListener("input", () => {
   touchPurchase();
 });
   if(!p || p.imported) return;
-  p.supplier = inpSupplier.value;
   touchPurchase();
 });
 

@@ -91,28 +91,6 @@ function money(n){
   return s + " ₽";
 }
 
-function isoToRu(iso){
-  const m = String(iso||"").match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  if(!m) return String(iso||"");
-  return `${m[3]}.${m[2]}.${m[1]}`;
-}
-function ruToIso(ru){
-  const m = String(ru||"").match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
-  if(!m) return "";
-  return `${m[3]}-${m[2]}-${m[1]}`;
-}
-function maskRuDate(s){
-  s = String(s||"").replace(/[^\d]/g,"").slice(0,8);
-  const a = s.slice(0,2);
-  const b = s.slice(2,4);
-  const c = s.slice(4,8);
-  let out = a;
-  if(s.length>2) out += "." + b;
-  if(s.length>4) out += "." + c;
-  return out;
-}
-
-
 function parseLastNumber(str){
   if(!str) return 0;
   // extract last number (allow spaces and commas)
@@ -169,6 +147,14 @@ function renderList(){
   }
 
   for(const p of items){
+    const wrap = document.createElement("div");
+    wrap.className = "purchaseSwipe";
+
+    const del = document.createElement("button");
+    del.className = "swipeDelete";
+    del.type = "button";
+    del.textContent = "Удалить";
+
     const row = document.createElement("div");
     row.className = "purchaseRow " + (p.imported ? "done" : "todo") + (currentFilter==="arch" ? " arch" : "");
     row.tabIndex = 0;
@@ -196,15 +182,116 @@ function renderList(){
     row.appendChild(top);
     row.appendChild(bottom);
 
-    row.addEventListener("click", () => openPurchase(p.id));
+    // normal open
+    row.addEventListener("click", () => {
+      if(row.dataset.swipe === "open") return;
+      openPurchase(p.id);
+    });
     row.addEventListener("keydown", (e) => {
       if(e.key === "Enter" || e.key === " ") openPurchase(p.id);
     });
 
-    listEl.appendChild(row);
+    // delete action
+    attachSwipeDelete(wrap, row, del, () => {
+      if(!confirm("Удалить закупку?")) return;
+      state.purchases = state.purchases.filter(x => x.id !== p.id);
+      saveState();
+      renderList();
+    });
+
+    wrap.appendChild(del);
+    wrap.appendChild(row);
+    listEl.appendChild(wrap);
   }
 }
 
+
+
+// --- Swipe-to-delete for list rows (iPhone style) ---
+function attachSwipeDelete(wrapEl, rowEl, delBtnEl, onDelete){
+  const MAX = 92;           // px reveal
+  const THRESH = 18;        // start drag
+  const OPEN_AT = 44;       // open if beyond
+  let startX = 0;
+  let startY = 0;
+  let dx = 0;
+  let dragging = false;
+
+  function setX(x){
+    rowEl.style.transform = `translateX(${x}px)`;
+  }
+  function close(){
+    wrapEl.classList.remove("swipeOpen");
+    rowEl.dataset.swipe = "";
+    setX(0);
+  }
+  function open(){
+    wrapEl.classList.add("swipeOpen");
+    rowEl.dataset.swipe = "open";
+    setX(-MAX);
+  }
+
+  // click on row: if open -> close; else allow normal click handler
+  rowEl.addEventListener("click", (e) => {
+    if(rowEl.dataset.swipe === "open"){
+      e.stopPropagation();
+      close();
+    }
+  }, true);
+
+  delBtnEl.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onDelete();
+  });
+
+  rowEl.addEventListener("touchstart", (e) => {
+    if(!e.touches || e.touches.length !== 1) return;
+    const t = e.touches[0];
+    startX = t.clientX;
+    startY = t.clientY;
+    dx = 0;
+    dragging = false;
+  }, {passive:true});
+
+  rowEl.addEventListener("touchmove", (e) => {
+    if(!e.touches || e.touches.length !== 1) return;
+    const t = e.touches[0];
+    const curX = t.clientX;
+    const curY = t.clientY;
+    const diffX = curX - startX;
+    const diffY = curY - startY;
+
+    // If mostly vertical scroll, do nothing
+    if(Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > 6) return;
+
+    // Only left swipe (or right to close when open)
+    if(!dragging){
+      if(Math.abs(diffX) < THRESH) return;
+      dragging = true;
+    }
+
+    e.preventDefault();
+
+    // When already open, allow right swipe to close
+    let x = diffX;
+    if(rowEl.dataset.swipe === "open") x = diffX - MAX;
+
+    // clamp
+    if(x < -MAX) x = -MAX;
+    if(x > 0) x = 0;
+
+    dx = x;
+    setX(x);
+  }, {passive:false});
+
+  rowEl.addEventListener("touchend", () => {
+    if(!dragging) return;
+    // decide open/close
+    if(dx <= -OPEN_AT) open();
+    else close();
+  }, {passive:true});
+}
 function renderEdit(){
   const p = getPurchase(currentId);
   if(!p) return;
@@ -214,7 +301,7 @@ function renderEdit(){
   const sum = calcPurchaseSum(p);
   editMeta.textContent = `${p.imported ? "Импортировано" : "Не импортировано"} • ${money(sum)}`;
 
-  inpDate.value = isoToRu(p.date || todayYmd());
+  inpDate.value = p.date || todayYmd();
   inpSupplier.value = p.supplier || "";
 
   const readOnly = !!p.imported;
@@ -232,7 +319,7 @@ function renderEdit(){
     const name = document.createElement("input");
     name.className = "name";
     name.type = "text";
-    name.placeholder = "";
+    name.placeholder = "Товар (например: RTX 3060)";
     name.value = it.name || "";
     name.disabled = readOnly;
 
@@ -508,27 +595,6 @@ inpDate.addEventListener("input", () => {
 });
 inpSupplier.addEventListener("input", () => {
   const p = getPurchase(currentId);
-
-  // RU_DATE_MASK_BEGIN
-  inpDate.addEventListener("input", (e) => {
-    const masked = maskRuDate(e.target.value);
-    if (e.target.value !== masked) e.target.value = masked;
-  });
-
-  inpDate.addEventListener("change", (e) => {
-    const masked = maskRuDate(e.target.value);
-    e.target.value = masked;
-    const iso = ruToIso(masked);
-    if (iso) {
-      // keep internal state as ISO
-      if (state?.draft) state.draft.date = iso;
-      if (state?.current) state.current.date = iso;
-      if (currentId && state?.byId?.[currentId]) state.byId[currentId].date = iso;
-      saveState();
-      renderEdit();
-    }
-  });
-  // RU_DATE_MASK_END
   if(!p || p.imported) return;
   p.supplier = inpSupplier.value;
   touchPurchase();
